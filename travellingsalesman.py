@@ -1,0 +1,1 @@
+read_file = open('problem.tsp', 'r')
