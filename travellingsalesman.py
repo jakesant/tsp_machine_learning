@@ -3,6 +3,7 @@ import networkx #https://networkx.org/documentation/stable/
 import acopy #https://acopy.readthedocs.io/en/latest/
 from satsp import solver #https://pypi.org/project/satsp/
 import matplotlib.pyplot as pyplot
+import time
 
 def sa(graph):
     """Simulated Annealing Algorithm
@@ -15,8 +16,12 @@ def aco(graph):
     """Ant Colony Optimisation Algorithm"""
 
     solver = acopy.Solver(rho=.03, q=1)
+    timer = acopy.plugins.Timer()
+    solver.add_plugin(timer) #Will give us
     colony = acopy.Colony(alpha=1, beta=3)
     tour = solver.solve(graph, colony, limit=10)
+    print("Total time taken", timer.duration)
+    print("Time per iteration", timer.time_per_iter)
     print("Cost of tour", tour.cost)
     print("Path", tour.path)
     return tour
