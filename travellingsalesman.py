@@ -5,6 +5,15 @@ from satsp import solver #https://pypi.org/project/satsp/
 import matplotlib.pyplot as pyplot
 import time
 
+"""Instances and their best known solutions
+http://elib.zib.de/pub/mp-testdata/tsp/tsplib/stsp-sol.html
+
+berlin52 : 7542
+burma14: 3323
+pr107 : 44303
+"""
+
+
 def sa(graph):
     """Simulated Annealing Algorithm
     """
@@ -13,18 +22,37 @@ def sa(graph):
     solver.PrintSolution
 
 def aco(graph):
-    """Ant Colony Optimisation Algorithm"""
+    """Ant Colony Optimisation Algorithm
+    
+    Tests out multiple configurations for ACO parameters"""
+    
+    configs = [
+                [.03, 1, 1, 3, 500],
+                [.03, 5, 1, 3, 500],
+                [.03, 10, 1, 3, 500],
+                [.03, 25, 1, 3, 500],
+                [.03, 1, 2, 3, 500],
+                [.03, 5, 2, 3, 500],
+                [.03, 10, 2, 3, 500],
+                [.03, 25, 2, 3, 500],
+                [.03, 1, 2, 4, 500],
+                [.03, 5, 2, 4, 500],
+                [.03, 10, 2, 4, 500],
+                [.03, 25, 2, 4, 500]
+            ]
 
-    solver = acopy.Solver(rho=.03, q=1)
-    timer = acopy.plugins.Timer()
-    solver.add_plugin(timer) #Will give us
-    colony = acopy.Colony(alpha=1, beta=3)
-    tour = solver.solve(graph, colony, limit=10)
-    print("Total time taken", timer.duration)
-    print("Time per iteration", timer.time_per_iter)
-    print("Cost of tour", tour.cost)
-    print("Path", tour.path)
-    return tour
+    for index, config in enumerate(configs):
+        print("Test:", index+1)
+        solver = acopy.Solver(rho=config[0], q=config[1])
+        timer = acopy.plugins.Timer()
+        solver.add_plugin(timer)
+        colony = acopy.Colony(alpha=config[2], beta=config[3])
+        tour = solver.solve(graph, colony, limit=config[4])
+        print("Total time taken", timer.duration)
+        print("Time per iteration", timer.time_per_iter)
+        print("Cost of tour", tour.cost)
+        print("Path", tour.path)
+        print("")
 
 def load_file(G):
     """Stores the problem in a list of cities"""
@@ -58,13 +86,21 @@ def draw(G, tsp, tour):
     pyplot.show()
 
 if __name__=='__main__':
-    tsp = tsplib95.load('burma14.tsp')
+    files = ['burma14.tsp', 'berlin52.tsp', 'pr107.tsp', 'gil262.tsp']
+
+    for file in files:
+        tsp = tsplib95.load(file)
+        problem_graph = tsp.get_graph()
+        print("Ant Colony Optimisation test")
+        aco(problem_graph)
+
+    tsp = tsplib95.load('berlin52.tsp')
     problem_graph = tsp.get_graph()
     cities = load_file(problem_graph)
     #networkx.draw(problem_graph)
     print("Ant Colony Optimisation test")
-    acotour = aco(problem_graph)
+    aco(problem_graph)
     print("Simulated Annealing test")
-    sa(cities)
-    draw(problem_graph, tsp, acotour)
-    print("Ok")
+    #sa(cities)
+    #draw(problem_graph, tsp)
+    #print("Ok")
