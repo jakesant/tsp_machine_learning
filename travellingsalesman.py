@@ -9,8 +9,9 @@ import time
 http://elib.zib.de/pub/mp-testdata/tsp/tsplib/stsp-sol.html
 
 berlin52 : 7542
-burma14: 3323
+st70 : 675
 pr107 : 44303
+ch150 : 6528
 """
 
 
@@ -18,19 +19,29 @@ def sa(graph, cities):
     """Simulated Annealing Algorithm"""
 
     configs = [
-        #alpha, epochs, stopping_count
-        [.99, 2000, 300],
-        [.1, 2000, 300]
+        #alpha, epochs
+        [.01, 1000],
+        [.5, 1000,],
+        [.99, 1000],
+        [.01, 2000],
+        [.5, 2000,],
+        [.99, 2000],
+        [.01, 3000],
+        [.5, 3000,],
+        [.99, 3000]
     ]
 
     for index, config in enumerate(configs):
-        print("Test:", index+1)
         start_time = time.time()
-        solver.Solve(city_list = cities, alpha = config[0], epochs = config[1], stopping_count = config[2], screen_output=False)
+        solver.Solve(city_list = cities, alpha = config[0], epochs = config[1], screen_output=False)
         end_time = time.time()
         time_taken = end_time - start_time
-        solver.PrintSolution()
+        print("Test:", index+1)
+        print("Alpha value:", config[0])
+        print("Best TSP distance: ",solver.GetBestDist())
+        print("Best TSP tour: ", solver.GetBestTour())
         print("Total time taken:", time_taken, "seconds")
+        print("")
 
 def aco(graph, tsp):
     """Ant Colony Optimisation Algorithm
@@ -39,14 +50,14 @@ def aco(graph, tsp):
     
     configs = [
        #rho, q, alpha, beta, limit
-        [.03, 1, 1, 3, 500],
-        [.03, 5, 1, 3, 500],
-        [.03, 10, 1, 3, 500],
-        [.03, 25, 1, 3, 500],
-        [.06, 1, 1, 3, 500],
-        [.06, 5, 1, 3, 500],
-        [.06, 10, 1, 3, 500],
-        [.06, 25, 1, 3, 500]
+        [.03, 1, 1, 6, 500],
+        [.03, 5, 1, 6, 500],
+        [.03, 10, 1, 6, 500],
+        [.03, 25, 1, 6, 500],
+        [.06, 1, 1, 6, 500],
+        [.06, 5, 1, 6, 500],
+        [.06, 10, 1, 6, 500],
+        [.06, 25, 1, 6, 500]
     ]
 
     for index, config in enumerate(configs):
@@ -60,7 +71,7 @@ def aco(graph, tsp):
         print("Time per iteration:", timer.time_per_iter)
         print("Cost of tour:", tour.cost)
         print("Tour:", tour.path)
-        draw(graph, tsp, tour)
+        #draw(graph, tsp, tour)
         print("")
 
 def load_file(G):
@@ -96,23 +107,35 @@ def draw(G, tsp, tour):
     pyplot.close()
 
 if __name__=='__main__':
-    #files = ['berlin52.tsp', 'pr107.tsp', 'gil262.tsp']
-    files = ['berlin52.tsp']
+    #files = ['berlin52.tsp', 'st70.tsp', 'pr107.tsp', 'ch150,tsp']
+    files = ['st70.tsp']
 
     """for file in files:
         tsp = tsplib95.load(file)
         problem_graph = tsp.get_graph()
-        print("Ant Colony Optimisation test")
+        cities = load_file(tsp)
+        print("----Ant Colony Optimisation----")
         print("Instance name:", file)
-        aco(problem_graph, tsp)"""
+        aco(problem_graph, tsp)
+        print("----Simulated Annealing----")
+        print("Instance name:", file)
+        cities = load_file(tsp)
+        sa(problem_graph, cities)"""
 
     for file in files:
         tsp = tsplib95.load(file)
         problem_graph = tsp.get_graph()
-        print("Simulated Annealing test")
+        print("Simulated Annealing")
         print("Instance name:", file)
         cities = load_file(tsp)
         sa(problem_graph, cities)
+
+    """for file in files:
+        tsp = tsplib95.load(file)
+        problem_graph = tsp.get_graph()
+        print("----Ant Colony Optimisation----")
+        print("Instance name:", file)
+        aco(problem_graph, tsp)"""
 
     #tsp = tsplib95.load('berlin52.tsp')
     #problem_graph = tsp.get_graph()
