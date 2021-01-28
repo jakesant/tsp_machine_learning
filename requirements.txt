@@ -1,0 +1,7 @@
+numpy==1.19.2
+pandas==1.2.0
+matplotlib==3.3.3
+satsp==0.9
+tsplib95==0.7.1
+networkx==2.5
+acopy==0.7.0
