@@ -50,14 +50,14 @@ def aco(graph, tsp):
     
     configs = [
        #rho, q, alpha, beta, limit
-        [.03, 1, 1, 6, 500],
-        [.03, 5, 1, 6, 500],
-        [.03, 10, 1, 6, 500],
-        [.03, 25, 1, 6, 500],
-        [.06, 1, 1, 6, 500],
-        [.06, 5, 1, 6, 500],
-        [.06, 10, 1, 6, 500],
-        [.06, 25, 1, 6, 500]
+        [.03, 1, 1, 3, 500],
+        [.03, 5, 1, 3, 500],
+        [.03, 10, 1, 3, 500],
+        [.03, 25, 1, 3, 500],
+        [.06, 1, 1, 3, 500],
+        [.06, 5, 1, 3, 500],
+        [.06, 10, 1, 3, 500],
+        [.06, 25, 1, 3, 500]
     ]
 
     for index, config in enumerate(configs):
@@ -71,7 +71,6 @@ def aco(graph, tsp):
         print("Time per iteration:", timer.time_per_iter)
         print("Cost of tour:", tour.cost)
         print("Tour:", tour.path)
-        #draw(graph, tsp, tour)
         print("")
 
 def load_file(G):
@@ -107,43 +106,16 @@ def draw(G, tsp, tour):
     pyplot.close()
 
 if __name__=='__main__':
-    #files = ['berlin52.tsp', 'st70.tsp', 'pr107.tsp', 'ch150,tsp']
-    files = ['st70.tsp']
-
-    """for file in files:
-        tsp = tsplib95.load(file)
-        problem_graph = tsp.get_graph()
-        cities = load_file(tsp)
-        print("----Ant Colony Optimisation----")
-        print("Instance name:", file)
-        aco(problem_graph, tsp)
-        print("----Simulated Annealing----")
-        print("Instance name:", file)
-        cities = load_file(tsp)
-        sa(problem_graph, cities)"""
+    files = ['berlin52.tsp', 'st70.tsp', 'pr107.tsp', 'ch150,tsp']
 
     for file in files:
         tsp = tsplib95.load(file)
-        problem_graph = tsp.get_graph()
-        print("Simulated Annealing")
-        print("Instance name:", file)
-        cities = load_file(tsp)
-        sa(problem_graph, cities)
-
-    """for file in files:
-        tsp = tsplib95.load(file)
-        problem_graph = tsp.get_graph()
+        problem_graph = tsp.get_graph() #Converts to problem graph for ACO
+        cities = load_file(tsp) #Converts to list for SA
         print("----Ant Colony Optimisation----")
         print("Instance name:", file)
-        aco(problem_graph, tsp)"""
-
-    #tsp = tsplib95.load('berlin52.tsp')
-    #problem_graph = tsp.get_graph()
-    #cities = load_file(problem_graph)
-    #networkx.draw(problem_graph)
-    #print("Ant Colony Optimisation test")
-    #aco(problem_graph)
-    #print("Simulated Annealing test")
-    #sa(cities)
-    #draw(problem_graph, tsp)
-    print("Ok")
+        aco(problem_graph, tsp)
+        print("")
+        print("----Simulated Annealing----")
+        print("Instance name:", file)
+        sa(cities)
