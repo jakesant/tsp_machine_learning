@@ -1,8 +1,6 @@
 import tsplib95 #https://tsplib95.readthedocs.io/en/stable
-import networkx #https://networkx.org/documentation/stable/
 import acopy #https://acopy.readthedocs.io/en/latest/
 from satsp import solver #https://pypi.org/project/satsp/
-import matplotlib.pyplot as pyplot
 import time
 
 """Instances and their best known solutions
@@ -14,8 +12,7 @@ pr107 : 44303
 ch150 : 6528
 """
 
-
-def sa(graph, cities):
+def sa(cities):
     """Simulated Annealing Algorithm"""
 
     configs = [
@@ -38,12 +35,12 @@ def sa(graph, cities):
         time_taken = end_time - start_time
         print("Test:", index+1)
         print("Alpha value:", config[0])
-        print("Best TSP distance: ",solver.GetBestDist())
+        print("Best TSP distance: ",solver.GetBestDist()) #Outputs cost of the best tour
         print("Best TSP tour: ", solver.GetBestTour())
         print("Total time taken:", time_taken, "seconds")
         print("")
 
-def aco(graph, tsp):
+def aco(graph):
     """Ant Colony Optimisation Algorithm
     
     Tests out multiple configurations for ACO parameters"""
@@ -74,7 +71,7 @@ def aco(graph, tsp):
         print("")
 
 def load_file(G):
-    """Stores the problem in a list of cities"""
+    """Stores the problem as a list of cities with their coordinates"""
 
     cities = []
 
@@ -86,25 +83,6 @@ def load_file(G):
     
     return cities
 
-def draw(G, tsp, tour):
-    """Draws graph of solution"""
-
-    colors = ['black', 'blue']
-    pyplot.figure(dpi=300)
-    _, ax = pyplot.subplots()
-    pos = tsp.display_data or tsp.node_coords
-    networkx.draw_networkx_nodes(G, pos=pos, ax=ax, node_color=(0.4157, 0.3529, 0.3490))
-    networkx.draw_networkx_labels(G, pos=pos, labels={i: str(i) for i in range(1, len(G.nodes) + 1)}, font_size=8,
-                            font_color='white')
-    solution = tour.path
-    path = solution
-    networkx.draw_networkx_edges(G, pos=pos, edgelist=path, edge_color=colors[0])
-    # If this doesn't exsit, x_axis and y_axis's numbers are not there.
-    ax.tick_params(left=True, bottom=True, labelleft=True, labelbottom=True)
-    pyplot.show(block=False)
-    pyplot.pause(5)
-    pyplot.close()
-
 if __name__=='__main__':
     files = ['berlin52.tsp', 'st70.tsp', 'pr107.tsp', 'ch150,tsp']
 
@@ -114,7 +92,7 @@ if __name__=='__main__':
         cities = load_file(tsp) #Converts to list for SA
         print("----Ant Colony Optimisation----")
         print("Instance name:", file)
-        aco(problem_graph, tsp)
+        aco(problem_graph)
         print("")
         print("----Simulated Annealing----")
         print("Instance name:", file)
